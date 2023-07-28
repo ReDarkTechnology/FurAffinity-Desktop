@@ -5,7 +5,6 @@ An unofficial client for furaffinity.net! Only supports Windows for now
 ## Features
 - Keeping itself alive in the background (like Discord)
 - Sends you notification if there's a new notification!
-- Can be set up to start on startup!
 - Multiple profiles! (Supports multiple accounts!)
 
 ## How to use
