@@ -34,9 +34,9 @@
             this.showLinkToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openImageToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hidePreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.postImage = new System.Windows.Forms.PictureBox();
             this.imageProgressBar = new System.Windows.Forms.ProgressBar();
-            this.hidePreviewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.itemContextMenu.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.postImage)).BeginInit();
             this.SuspendLayout();
@@ -61,28 +61,35 @@
             this.removeToolStripMenuItem,
             this.hidePreviewToolStripMenuItem});
             this.itemContextMenu.Name = "contextMenuStrip1";
-            this.itemContextMenu.Size = new System.Drawing.Size(181, 114);
+            this.itemContextMenu.Size = new System.Drawing.Size(144, 92);
             // 
             // showLinkToolStripMenuItem
             // 
             this.showLinkToolStripMenuItem.Name = "showLinkToolStripMenuItem";
-            this.showLinkToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.showLinkToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.showLinkToolStripMenuItem.Text = "Open Link";
             this.showLinkToolStripMenuItem.Click += new System.EventHandler(this.showLinkToolStripMenuItem_Click);
             // 
             // openImageToolStripMenuItem
             // 
             this.openImageToolStripMenuItem.Name = "openImageToolStripMenuItem";
-            this.openImageToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openImageToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.openImageToolStripMenuItem.Text = "Open Image";
             this.openImageToolStripMenuItem.Click += new System.EventHandler(this.openImageToolStripMenuItem_Click);
             // 
             // removeToolStripMenuItem
             // 
             this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
             this.removeToolStripMenuItem.Text = "Remove";
             this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
+            // 
+            // hidePreviewToolStripMenuItem
+            // 
+            this.hidePreviewToolStripMenuItem.Name = "hidePreviewToolStripMenuItem";
+            this.hidePreviewToolStripMenuItem.Size = new System.Drawing.Size(143, 22);
+            this.hidePreviewToolStripMenuItem.Text = "Hide Preview";
+            this.hidePreviewToolStripMenuItem.Click += new System.EventHandler(this.hidePreviewToolStripMenuItem_Click);
             // 
             // postImage
             // 
@@ -104,23 +111,16 @@
             this.imageProgressBar.Size = new System.Drawing.Size(100, 23);
             this.imageProgressBar.TabIndex = 2;
             // 
-            // hidePreviewToolStripMenuItem
-            // 
-            this.hidePreviewToolStripMenuItem.Name = "hidePreviewToolStripMenuItem";
-            this.hidePreviewToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
-            this.hidePreviewToolStripMenuItem.Text = "Hide Preview";
-            this.hidePreviewToolStripMenuItem.Click += new System.EventHandler(this.hidePreviewToolStripMenuItem_Click);
-            // 
             // PostItem
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(0)))), ((int)(((byte)(40)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.ContextMenuStrip = this.itemContextMenu;
             this.Controls.Add(this.imageProgressBar);
             this.Controls.Add(this.postImage);
             this.Controls.Add(this.postName);
-            this.ForeColor = System.Drawing.Color.Magenta;
+            this.ForeColor = System.Drawing.Color.White;
             this.Name = "PostItem";
             this.Size = new System.Drawing.Size(152, 187);
             this.Click += new System.EventHandler(this.PostItem_Click);

@@ -55,7 +55,7 @@
             // 
             this.imagesHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.imagesHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(60)))));
+            this.imagesHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.imagesHeader.Location = new System.Drawing.Point(7, 10);
             this.imagesHeader.Margin = new System.Windows.Forms.Padding(9);
             this.imagesHeader.Name = "imagesHeader";
@@ -83,9 +83,9 @@
             // 
             this.imagesPathBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.imagesPathBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(0)))), ((int)(((byte)(40)))));
+            this.imagesPathBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.imagesPathBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.imagesPathBox.ForeColor = System.Drawing.Color.Magenta;
+            this.imagesPathBox.ForeColor = System.Drawing.Color.White;
             this.imagesPathBox.Location = new System.Drawing.Point(138, 42);
             this.imagesPathBox.Name = "imagesPathBox";
             this.imagesPathBox.Size = new System.Drawing.Size(239, 20);
@@ -106,7 +106,7 @@
             // 
             this.applicationHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.applicationHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(60)))));
+            this.applicationHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.applicationHeader.Location = new System.Drawing.Point(7, 93);
             this.applicationHeader.Margin = new System.Windows.Forms.Padding(9);
             this.applicationHeader.Name = "applicationHeader";
@@ -129,9 +129,9 @@
             // 
             this.profileDataBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.profileDataBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(0)))), ((int)(((byte)(40)))));
+            this.profileDataBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.profileDataBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.profileDataBox.ForeColor = System.Drawing.Color.Magenta;
+            this.profileDataBox.ForeColor = System.Drawing.Color.White;
             this.profileDataBox.Location = new System.Drawing.Point(138, 125);
             this.profileDataBox.Name = "profileDataBox";
             this.profileDataBox.Size = new System.Drawing.Size(246, 20);
@@ -157,7 +157,7 @@
             // 
             this.notificationHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.notificationHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(60)))));
+            this.notificationHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.notificationHeader.Location = new System.Drawing.Point(7, 180);
             this.notificationHeader.Margin = new System.Windows.Forms.Padding(9);
             this.notificationHeader.Name = "notificationHeader";
@@ -241,7 +241,7 @@
             // 
             this.profilesHeader.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.profilesHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(0)))), ((int)(((byte)(60)))));
+            this.profilesHeader.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.profilesHeader.Location = new System.Drawing.Point(7, 268);
             this.profilesHeader.Margin = new System.Windows.Forms.Padding(9);
             this.profilesHeader.Name = "profilesHeader";
@@ -279,9 +279,9 @@
             // 
             this.profileNameBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.profileNameBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(0)))), ((int)(((byte)(40)))));
+            this.profileNameBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.profileNameBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.profileNameBox.ForeColor = System.Drawing.Color.Magenta;
+            this.profileNameBox.ForeColor = System.Drawing.Color.White;
             this.profileNameBox.Location = new System.Drawing.Point(7, 388);
             this.profileNameBox.Name = "profileNameBox";
             this.profileNameBox.Size = new System.Drawing.Size(332, 20);
@@ -292,7 +292,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(0)))), ((int)(((byte)(20)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(389, 418);
             this.Controls.Add(this.profileNameBox);
             this.Controls.Add(this.profileAddButton);
@@ -312,7 +312,7 @@
             this.Controls.Add(this.imagesPathBox);
             this.Controls.Add(this.downloadOnFaveBox);
             this.Controls.Add(this.imagesHeader);
-            this.ForeColor = System.Drawing.Color.Magenta;
+            this.ForeColor = System.Drawing.Color.White;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsForm";
             this.Text = "Settings";

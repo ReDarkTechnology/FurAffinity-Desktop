@@ -37,7 +37,8 @@
             this.nextButton = new System.Windows.Forms.Button();
             this.backButton = new System.Windows.Forms.Button();
             this.sidePanel = new System.Windows.Forms.Panel();
-            this.cibBox = new System.Windows.Forms.CheckBox();
+            this.checkManualButton = new System.Windows.Forms.Button();
+            this.checkBackgroundBox = new System.Windows.Forms.CheckBox();
             this.notifMessagesButton = new System.Windows.Forms.Button();
             this.notifSubsButton = new System.Windows.Forms.Button();
             this.notifCommentsButton = new System.Windows.Forms.Button();
@@ -83,14 +84,17 @@
             this.settingsButton.Text = "Settings";
             this.settingsButton.UseVisualStyleBackColor = true;
             this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
+            this.settingsButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // urlBox
             // 
             this.urlBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.urlBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(0)))), ((int)(((byte)(40)))));
+            this.urlBox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.urlBox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.CustomSource;
+            this.urlBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.urlBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.urlBox.ForeColor = System.Drawing.Color.Magenta;
+            this.urlBox.ForeColor = System.Drawing.Color.White;
             this.urlBox.Location = new System.Drawing.Point(81, 5);
             this.urlBox.Margin = new System.Windows.Forms.Padding(5);
             this.urlBox.Name = "urlBox";
@@ -109,6 +113,7 @@
             this.reloadButton.Text = "@";
             this.reloadButton.UseVisualStyleBackColor = true;
             this.reloadButton.Click += new System.EventHandler(this.reloadButton_Click);
+            this.reloadButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // nextButton
             // 
@@ -120,6 +125,7 @@
             this.nextButton.Text = ">";
             this.nextButton.UseVisualStyleBackColor = true;
             this.nextButton.Click += new System.EventHandler(this.nextButton_Click);
+            this.nextButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // backButton
             // 
@@ -131,10 +137,12 @@
             this.backButton.Text = "<";
             this.backButton.UseVisualStyleBackColor = true;
             this.backButton.Click += new System.EventHandler(this.backButton_Click);
+            this.backButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // sidePanel
             // 
-            this.sidePanel.Controls.Add(this.cibBox);
+            this.sidePanel.Controls.Add(this.checkManualButton);
+            this.sidePanel.Controls.Add(this.checkBackgroundBox);
             this.sidePanel.Controls.Add(this.notifMessagesButton);
             this.sidePanel.Controls.Add(this.notifSubsButton);
             this.sidePanel.Controls.Add(this.notifCommentsButton);
@@ -151,17 +159,32 @@
             this.sidePanel.Size = new System.Drawing.Size(172, 532);
             this.sidePanel.TabIndex = 2;
             // 
-            // cibBox
+            // checkManualButton
             // 
-            this.cibBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.cibBox.AutoSize = true;
-            this.cibBox.Location = new System.Drawing.Point(6, 342);
-            this.cibBox.Name = "cibBox";
-            this.cibBox.Size = new System.Drawing.Size(129, 17);
-            this.cibBox.TabIndex = 10;
-            this.cibBox.Text = "Check in Background";
-            this.cibBox.UseVisualStyleBackColor = true;
-            this.cibBox.CheckedChanged += new System.EventHandler(this.cibBox_CheckedChanged);
+            this.checkManualButton.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.checkManualButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.checkManualButton.Location = new System.Drawing.Point(3, 312);
+            this.checkManualButton.Name = "checkManualButton";
+            this.checkManualButton.Size = new System.Drawing.Size(166, 23);
+            this.checkManualButton.TabIndex = 11;
+            this.checkManualButton.Text = "Check Manually";
+            this.checkManualButton.UseVisualStyleBackColor = true;
+            this.checkManualButton.Click += new System.EventHandler(this.checkManualButton_Click);
+            this.checkManualButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
+            // 
+            // checkBackgroundBox
+            // 
+            this.checkBackgroundBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.checkBackgroundBox.AutoSize = true;
+            this.checkBackgroundBox.Location = new System.Drawing.Point(6, 342);
+            this.checkBackgroundBox.Name = "checkBackgroundBox";
+            this.checkBackgroundBox.Size = new System.Drawing.Size(129, 17);
+            this.checkBackgroundBox.TabIndex = 10;
+            this.checkBackgroundBox.Text = "Check in Background";
+            this.checkBackgroundBox.UseVisualStyleBackColor = true;
+            this.checkBackgroundBox.CheckedChanged += new System.EventHandler(this.cibBox_CheckedChanged);
+            this.checkBackgroundBox.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // notifMessagesButton
             // 
@@ -175,6 +198,7 @@
             this.notifMessagesButton.Text = "Messages: 0";
             this.notifMessagesButton.UseVisualStyleBackColor = true;
             this.notifMessagesButton.Click += new System.EventHandler(this.notifMessagesButton_Click);
+            this.notifMessagesButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // notifSubsButton
             // 
@@ -188,6 +212,7 @@
             this.notifSubsButton.Text = "Submissions: 0";
             this.notifSubsButton.UseVisualStyleBackColor = true;
             this.notifSubsButton.Click += new System.EventHandler(this.notifSubsButton_Click);
+            this.notifSubsButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // notifCommentsButton
             // 
@@ -201,6 +226,7 @@
             this.notifCommentsButton.Text = "Comments: 0";
             this.notifCommentsButton.UseVisualStyleBackColor = true;
             this.notifCommentsButton.Click += new System.EventHandler(this.notifCommentsButton_Click);
+            this.notifCommentsButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // notifJournalsButton
             // 
@@ -214,6 +240,7 @@
             this.notifJournalsButton.Text = "Journals: 0";
             this.notifJournalsButton.UseVisualStyleBackColor = true;
             this.notifJournalsButton.Click += new System.EventHandler(this.notifJournalsButton_Click);
+            this.notifJournalsButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // notifWatchersButton
             // 
@@ -227,6 +254,7 @@
             this.notifWatchersButton.Text = "Watches: 0";
             this.notifWatchersButton.UseVisualStyleBackColor = true;
             this.notifWatchersButton.Click += new System.EventHandler(this.notifWatchersButton_Click);
+            this.notifWatchersButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // notifFavesButton
             // 
@@ -240,6 +268,7 @@
             this.notifFavesButton.Text = "Faves: 0";
             this.notifFavesButton.UseVisualStyleBackColor = true;
             this.notifFavesButton.Click += new System.EventHandler(this.notifFavesButton_Click);
+            this.notifFavesButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // label2
             // 
@@ -261,7 +290,7 @@
             this.favoritePostsLayout.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.favoritePostsLayout.Location = new System.Drawing.Point(3, 52);
             this.favoritePostsLayout.Name = "favoritePostsLayout";
-            this.favoritePostsLayout.Size = new System.Drawing.Size(166, 285);
+            this.favoritePostsLayout.Size = new System.Drawing.Size(166, 254);
             this.favoritePostsLayout.TabIndex = 2;
             // 
             // label1
@@ -286,6 +315,7 @@
             this.favoritePostButton.Text = "Local Favorite";
             this.favoritePostButton.UseVisualStyleBackColor = true;
             this.favoritePostButton.Click += new System.EventHandler(this.favoritePostButton_Click);
+            this.favoritePostButton.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             // 
             // notifIcon
             // 
@@ -335,12 +365,12 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(0)))), ((int)(((byte)(20)))));
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.ClientSize = new System.Drawing.Size(800, 562);
             this.Controls.Add(this.webBrowser);
             this.Controls.Add(this.sidePanel);
             this.Controls.Add(this.topPanel);
-            this.ForeColor = System.Drawing.Color.Magenta;
+            this.ForeColor = System.Drawing.Color.White;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -381,7 +411,8 @@
         private System.Windows.Forms.Button notifMessagesButton;
         private System.Windows.Forms.Button settingsButton;
         private Microsoft.Web.WebView2.WinForms.WebView2 webBrowser;
-        private System.Windows.Forms.CheckBox cibBox;
+        private System.Windows.Forms.CheckBox checkBackgroundBox;
+        private System.Windows.Forms.Button checkManualButton;
     }
 }
 

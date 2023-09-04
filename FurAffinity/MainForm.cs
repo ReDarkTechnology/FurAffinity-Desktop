@@ -24,6 +24,8 @@ namespace FurAffinity
         public List<PostItem> favoritedItems = new List<PostItem>();
         public static string profileDir = SettingsForm.preferences.profilePath;
         public static Profile profile = new Profile();
+        public static CoreWebView2Environment webViewEnvironment;
+        public static string absoluteProfileDir;
 
         // XPaths
         const string notificationXPath = "//*[@id=\"ddmenu\"]/ul/li[7]";
@@ -32,6 +34,69 @@ namespace FurAffinity
         #region Initialization
         public MainForm(string[] args)
         {
+            form = this;
+
+            absoluteProfileDir = InitializeEnvironment(args);
+
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            InitializeProfile(absoluteProfileDir);
+            InitializeComponent();
+
+            webBrowser.EnsureCoreWebView2Async(webViewEnvironment);
+            webBrowser.BackColor = Color.Black;
+            webBrowser.CoreWebView2InitializationCompleted += WebBrowser_CoreWebView2InitializationCompleted;
+
+            StartWatchingNotification(watchDuration);
+            CreateDir(SettingsForm.preferences.imageDirPath.FixPath());
+            LoadFavorites();
+
+            checkBackgroundBox.Checked = SettingsForm.preferences.checkInBackground;
+
+            SetupView();
+            FAScraper.onLoadedFinish += UpdateNotifications;
+        }
+
+        private static string InitializeEnvironment(string[] args)
+        {
+            string profilePath = GetProfilePathFromArgs(args);
+
+            var profDir = profilePath.FixPath();
+            CreateDir(profDir.FixPath());
+
+            string browserPath = null;
+
+            if (Directory.Exists("WebView2".FixPath()))
+                browserPath = "WebView2".FixPath();
+
+            var envTask = CoreWebView2Environment.CreateAsync(browserPath, profDir);
+            envTask.Wait();
+            webViewEnvironment = envTask.Result;
+            return profDir;
+        }
+
+        private void InitializeProfile(string profDir)
+        {
+            var profileJson = Path.Combine(profDir, "profile.json");
+
+            if (File.Exists(profileJson))
+            {
+                var data = File.ReadAllText(profileJson);
+                profile = JsonConvert.DeserializeObject<Profile>(data);
+            }
+            else
+            {
+                profile = new Profile();
+                profile.profileName = Path.GetFileName(profDir) == "ProfileData" ? "Default" : Path.GetFileName(profDir);
+                profile.profileDir = profDir;
+                SaveProfile();
+            }
+        }
+
+        private static string GetProfilePathFromArgs(string[] args)
+        {
+            // Find profile argument
             var profilePath = profileDir;
             if (args.Length > 0)
             {
@@ -54,90 +119,19 @@ namespace FurAffinity
                 }
             }
 
-            var profDir = profilePath.FixPath();
-            CreateDir(profDir.FixPath());
-            string browserPath = null;
-            if (Directory.Exists("WebView2".FixPath()))
-            {
-                browserPath = "WebView2".FixPath();
-            }
-            var envTask = CoreWebView2Environment.CreateAsync(browserPath, profDir);
-            envTask.Wait();
-            var webViewEnvironment = envTask.Result;
-
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            var profileJson = Path.Combine(profDir, "profile.json");
-            if(File.Exists(profileJson))
-            {
-                var data = File.ReadAllText(profileJson);
-                profile = JsonConvert.DeserializeObject<Profile>(data);
-            }
-            else
-            {
-                profile = new Profile();
-                profile.profileName = Path.GetFileName(profDir) == "ProfileData" ? "Default" : Path.GetFileName(profDir);
-                profile.profileDir = profDir;
-                SaveProfile();
-            }
-            InitializeComponent();
-            webBrowser.EnsureCoreWebView2Async(webViewEnvironment);
-
-            form = this;
-
-            webBrowser.BackColor = Color.Black;
-            webBrowser.CoreWebView2InitializationCompleted += WebBrowser_CoreWebView2InitializationCompleted;
-
-            StartWatchingNotification(watchDuration);
-            CreateDir(SettingsForm.preferences.imageDirPath.FixPath());
-            LoadFavorites();
-            
-            cibBox.Checked = SettingsForm.preferences.checkInBackground;
+            return profilePath;
         }
 
-        private void WebBrowser_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        public WebView2 SetupView()
         {
-            webBrowser.CoreWebView2.Navigate("https://furaffinity.net/");
-
-            webBrowser.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
-            webBrowser.CoreWebView2.NavigationCompleted += WebBrowser_Navigated;
-            webBrowser.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
-
-            webBrowser.CoreWebView2.Settings.IsPasswordAutosaveEnabled = true;
-            webBrowser.CoreWebView2.ContextMenuRequested += CoreWebView2_ContextMenuRequested;
-        }
-
-        private void CoreWebView2_ContextMenuRequested(object sender, CoreWebView2ContextMenuRequestedEventArgs e)
-        {
-            // Add new item to end of collection
-            /*var env = webBrowser.CoreWebView2.Environment;
-            if (e.ContextMenuTarget.PageUri.Contains("net/view/"))
-            {
-                string name = IsFavoriteExist(e.ContextMenuTarget.PageUri) ? "Remove Favorite" : "Add Favorite";
-                var newItem = env.CreateContextMenuItem("Favorite Post", null, CoreWebView2ContextMenuItemKind.Command);
-                newItem.CustomItemSelected += delegate (object send, Object ex)
-                {
-                    string pageUri = e.ContextMenuTarget.PageUri;
-                    System.Threading.SynchronizationContext.Current.Post((_) =>
-                    {
-                        MessageBox.Show(pageUri, "Page Uri", MessageBoxButtons.OK);
-                    },
-                    null);
-                };
-                e.MenuItems.Insert(1, newItem);
-            }*/
-        }
-
-        private void CoreWebView2_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
-        {
-            urlBox.Text = e.Uri;
-        }
-
-        private async void CoreWebView2_DOMContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
-        {
-            UpdateAll();
-            UpdateNotifications(await GetHtmlFromBrowser());
+            var webView = new WebView2();
+            var task = webView.EnsureCoreWebView2Async(webViewEnvironment);
+            webView.CoreWebView2InitializationCompleted += (s, e) => {
+                webView.CoreWebView2.Navigate(FAScraper.tosUrl);
+                Console.WriteLine("WebView for Notification background initialized");
+                FAScraper.SetView(webView);
+            };
+            return webView;
         }
 
         public void SaveProfile()
@@ -146,95 +140,27 @@ namespace FurAffinity
             var profileJson = Path.Combine(profDir, "profile.json");
             File.WriteAllText(profileJson, JsonConvert.SerializeObject(profile, Formatting.Indented));
         }
+        #endregion
 
-        public static void CreateDir(string dir)
+        #region Toolbar
+        private void backButton_Click(object sender, EventArgs e) => webBrowser.GoBack();
+        private void nextButton_Click(object sender, EventArgs e) => webBrowser.GoForward();
+        private void reloadButton_Click(object sender, EventArgs e) => webBrowser.Reload();
+
+        private void urlBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+            if (e.KeyCode == Keys.Enter)
+                webBrowser.CoreWebView2.Navigate(urlBox.Text);
+
+            if (e.KeyCode == Keys.Escape)
+                urlBox.Text = webBrowser.Source.AbsoluteUri;
+
+            MainForm_KeyDown(sender, e);
         }
         #endregion
 
         #region Browser
-        Timer timer = new Timer();
-        int reloadTime = 10000;
-
-        // This is bad in terms of optimization
-        public void TryGettingHtml()
-        {
-            return;
-            if (timer != null) timer.Dispose();
-
-            timer = new Timer();
-            timer.Interval = reloadTime;
-            timer.Tick += (a, e) =>
-            {
-                timer.Dispose();
-                timer = null;
-                UpdateAll();
-            };
-            timer.Start();
-        }
-
-        public void SetToolbarBasedOnUri(string url)
-        {
-            // urlBox.Text = webBrowser.Source.AbsoluteUri;
-            TryGettingHtml();
-            reloadTime = 1000;
-        }
-
-        public async void UpdateAll()
-        {
-            var brows = await GetHtmlFromBrowser();
-            Invoke(new Action(() => {
-                if (string.IsNullOrWhiteSpace(brows))
-                {
-                    TryGettingHtml();
-                }
-                else
-                {
-                    bool isValid = PostItem.IsHtmlAValidPost(brows);
-                    favoritePostButton.Enabled = isValid;
-                    if (isValid)
-                    {
-                        var isOnList = favoritedPosts.Find(val => val.url == webBrowser.Source.AbsoluteUri) != null;
-                        favoritePostButton.Text = isOnList ? "Remove Favorite" : "Local Favorite";
-                    }
-                    GetNotifications(brows);
-                }
-            }));
-        }
-
-        private void backButton_Click(object sender, EventArgs e)
-        {
-            webBrowser.GoBack();
-        }
-
-        private void nextButton_Click(object sender, EventArgs e)
-        {
-            webBrowser.GoForward();
-        }
-
-        private void reloadButton_Click(object sender, EventArgs e)
-        {
-            webBrowser.Reload();
-        }
-
-        private void urlBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyCode == Keys.Enter)
-            {
-                webBrowser.CoreWebView2.Navigate(urlBox.Text);
-            }
-
-            if(e.KeyCode == Keys.Escape)
-            {
-                urlBox.Text = webBrowser.Source.AbsoluteUri;
-            }
-        }
-
-        public void NavigateTo(string url)
-        {
-            webBrowser.CoreWebView2.Navigate(url);
-        }
+        public void NavigateTo(string url) => webBrowser.CoreWebView2.Navigate(url);
 
         public async Task<string> GetHtmlFromBrowser()
         {
@@ -243,37 +169,94 @@ namespace FurAffinity
             return JsonConvert.DeserializeObject(html).ToString();
         }
 
+        private void WebBrowser_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
+        {
+            webBrowser.CoreWebView2.Navigate("https://www.furaffinity.net/");
+
+            webBrowser.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
+            webBrowser.CoreWebView2.NavigationCompleted += WebBrowser_Navigated;
+            webBrowser.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
+            webBrowser.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
+
+            webBrowser.CoreWebView2.Settings.IsPasswordAutosaveEnabled = true;
+            webBrowser.CoreWebView2.ContextMenuRequested += CoreWebView2_ContextMenuRequested;
+        }
+
+        private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
+        {
+            if (!e.Uri.Contains("//www.furaffinity.net"))
+            {
+                System.Diagnostics.Process.Start(e.Uri);
+                e.Handled = true;
+            }
+        }
+
         private void WebBrowser_Navigated(object sender, CoreWebView2NavigationCompletedEventArgs e)
         {
             var uri = webBrowser.Source.AbsoluteUri;
             favoritePostButton.Enabled = uri.Contains("net/view/");
-            SetToolbarBasedOnUri(uri);
         }
 
-        private void settingsButton_Click(object sender, EventArgs e)
-        {
-            SettingsForm.ShowAvailable();
-        }
-
-        private void cibBox_CheckedChanged(object sender, EventArgs e)
-        {
-            SettingsForm.preferences.checkInBackground = cibBox.Checked;
-            SettingsForm.Save();
-        }
-
-        private void MainForm_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.F4)
+        private void CoreWebView2_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
+        {   
+            if(e.Uri.Contains("//www.furaffinity.net"))
             {
-                bool to = !sidePanel.Visible;
-                sidePanel.Visible = to;
-                topPanel.Visible = to;
+                urlBox.Text = e.Uri;
             }
+            else
+            {
+                if (MessageBox.Show($"This page leads you to {e.Uri}, do you want to open it in your browser?", "FurAffinity: External Links", MessageBoxButtons.YesNo) == DialogResult.Yes)
+                    System.Diagnostics.Process.Start(e.Uri);
+                e.Cancel = true;
+            }
+        }
+
+        private async void CoreWebView2_DOMContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e) =>
+            UpdateNotifications(await GetHtmlFromBrowser());
+
+        private void CoreWebView2_ContextMenuRequested(object sender, CoreWebView2ContextMenuRequestedEventArgs e)
+        {
+            // Add new item to end of collection
+            var env = webBrowser.CoreWebView2.Environment;
+            string url = webBrowser.Source.AbsoluteUri;
+            if (url.Contains("net/view/"))
+            {
+                string name = IsFavoriteExist(url) ? "Remove post from favorite" : "Add post to favorite";
+                var newItem = env.CreateContextMenuItem(name, null, CoreWebView2ContextMenuItemKind.Command);
+                newItem.CustomItemSelected += delegate (object send, Object ex)
+                {
+                    System.Threading.SynchronizationContext.Current.Post((_) =>
+                    {
+                        AddFavorite();
+                    },
+                    null);
+                };
+                e.MenuItems.Insert(1, newItem);
+            }
+        }
+
+        public void UpdateFavoriteButtonState(string html)
+        {
+            var brows = html;
+            Invoke(new Action(() => {
+                bool isValid = PostItem.IsHtmlAValidPost(brows);
+                favoritePostButton.Enabled = isValid;
+                if (isValid)
+                {
+                    var isOnList = favoritedPosts.Find(val => val.url == webBrowser.Source.AbsoluteUri) != null;
+                    favoritePostButton.Text = isOnList ? "Remove Favorite" : "Local Favorite";
+                }
+            }));
         }
         #endregion
 
         #region Favorites
-        private async void favoritePostButton_Click(object sender, EventArgs e)
+        private void favoritePostButton_Click(object sender, EventArgs e)
+        {
+            AddFavorite();
+        }
+
+        public async void AddFavorite()
         {
             var post = favoritedPosts.Find(val => val.url == webBrowser.Source.AbsoluteUri);
             if (post != null)
@@ -303,22 +286,16 @@ namespace FurAffinity
             }
         }
 
-        /*public bool IsFavoriteExist(string url) => favoritedPosts.Exists(val => val.url == url);
-        public void FavoritePost(string url)
-        {
-
-        }*/
-
         public void SaveFavorites()
         {
-            File.WriteAllText("favorites.json".FixPath(), JsonConvert.SerializeObject(favoritedPosts, Formatting.Indented));
+            File.WriteAllText(FavoritePath, JsonConvert.SerializeObject(favoritedPosts, Formatting.Indented));
         }
 
         public void LoadFavorites()
         {
-            if(File.Exists("favorites.json".FixPath()))
+            if(File.Exists(FavoritePath))
             {
-                favoritedPosts = JsonConvert.DeserializeObject<List<PostData>>(File.ReadAllText("favorites.json".FixPath()));
+                favoritedPosts = JsonConvert.DeserializeObject<List<PostData>>(File.ReadAllText(FavoritePath));
                 foreach(var post in favoritedPosts)
                 {
                     var item = new PostItem(post.url, post.html);
@@ -326,6 +303,13 @@ namespace FurAffinity
                     favoritePostsLayout.Controls.Add(item);
                 }
             }
+        }
+
+        public string FavoritePath => Path.Combine(absoluteProfileDir, "favorites.json");
+
+        public bool IsFavoriteExist(string url)
+        {
+            return favoritedPosts.Exists(val => val.url == url);
         }
 
         public void RemoveFavoritePost(PostData data)
@@ -377,16 +361,20 @@ namespace FurAffinity
         private void notifIcon_MouseClick(object sender, MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Left)
-            {
                 Show();
-            }
+        }
+
+        private void notifIcon_BalloonTipClicked(object sender, EventArgs e)
+        {
+            Show();
         }
         #endregion
 
         #region Notification
         int watchDuration => SettingsForm.preferences.watchInterval * 60000;
         Timer notifWatchTimer;
-
+        
+        public void CheckForNotification() => FAScraper.webView.Reload();
         public void StartWatchingNotification(int interval)
         {
             if (notifWatchTimer != null) notifWatchTimer.Dispose();
@@ -394,17 +382,12 @@ namespace FurAffinity
             notifWatchTimer = new Timer();
             notifWatchTimer.Interval = interval;
             notifWatchTimer.Tick += (a, e) => {
-
                 if (!SettingsForm.preferences.checkInBackground) return;
                 
-                if(Focused)
-                {
-                    return;
-                }
-
-                webBrowser.Reload();
-                Console.WriteLine("------------ Reloading notification background --------------");
-
+                if(Focused) return;
+                
+                FAScraper.webView.Reload();
+                Console.WriteLine("Scraper: Scraper's webview is reloading");
             };
             notifWatchTimer.Start();
         }
@@ -422,7 +405,6 @@ namespace FurAffinity
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                TryGettingHtml();
             }
 
             var notifNode = htmlDoc.DocumentNode.SelectSingleNode(notificationXPath);
@@ -477,10 +459,13 @@ namespace FurAffinity
             {
                 var message = history.GetNotificationChange(previous);
                 if (!string.IsNullOrWhiteSpace(message))
-                {
                     notifIcon.ShowBalloonTip(5000, "New Notifications", message, ToolTipIcon.Info);
-                }
             }
+        }
+
+        private void checkManualButton_Click(object sender, EventArgs e)
+        {
+            CheckForNotification();
         }
 
         public void RefreshNotificationInterface()
@@ -510,69 +495,33 @@ namespace FurAffinity
 
         private void notifMessagesButton_Click(object sender, EventArgs e) =>
             webBrowser.CoreWebView2.Navigate("https://www.furaffinity.net/msg/pms");
+        #endregion
 
-        private void watchCooldown_Scroll(object sender, EventArgs e)
+        #region Settings
+        private void settingsButton_Click(object sender, EventArgs e) => SettingsForm.ShowAvailable();
+        private void cibBox_CheckedChanged(object sender, EventArgs e)
         {
-            // watchDuration = watchCooldown.Value * 60000;
-            // if (notifWatchTimer != null) notifWatchTimer.Interval = watchDuration;
+            SettingsForm.preferences.checkInBackground = checkBackgroundBox.Checked;
+            SettingsForm.Save();
         }
+        #endregion
 
-        private void notifIcon_BalloonTipClicked(object sender, EventArgs e)
+        #region Keys
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
         {
-            Show();
+            if (e.KeyCode == Keys.F4)
+            {
+                bool to = !sidePanel.Visible;
+                sidePanel.Visible = to;
+                topPanel.Visible = to;
+            }
         }
+        #endregion
 
-        public void GetNotifications(string html)
+        #region Utility
+        public static void CreateDir(string dir)
         {
-            var htmlDoc = new HtmlDoc();
-            try
-            {
-                htmlDoc.LoadHtml(html);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                TryGettingHtml();
-            }
-
-            var notifNode = htmlDoc.DocumentNode.SelectSingleNode(notificationXPath);
-            if (notifNode != null)
-            {
-                var nodes = notifNode.SelectNodes("a");
-                if (nodes != null)
-                {
-                    foreach (var node in nodes)
-                    {
-                        var attribute = node.GetAttributeValue("href", null);
-                        switch (attribute)
-                        {
-                            case "/msg/submissions/":
-                                notifSubsButton.Text = "Submissions: " + node.InnerText.Replace("S", "");
-                                break;
-                            case "/msg/others/#comments":
-                                notifCommentsButton.Text = "Comments: " + node.InnerText.Replace("C", "");
-                                break;
-                            case "/msg/others/#favorites":
-                                notifFavesButton.Text = "Favorites: " + node.InnerText.Replace("F", "");
-                                break;
-                            case "/msg/others/#journals":
-                                notifJournalsButton.Text = "Journals: " + node.InnerText.Replace("J", "");
-                                break;
-                            case "/msg/others/#watches":
-                                notifWatchersButton.Text = "Watches: " + node.InnerText.Replace("W", "");
-                                break;
-                            case "/msg/pms/":
-                                notifMessagesButton.Text = "Messages: " + node.InnerText.Replace("N", "");
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-            }
-
-            TryGettingHtml();
-            reloadTime = 3000;
+            if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
         }
         #endregion
     }

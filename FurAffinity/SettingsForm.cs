@@ -102,7 +102,7 @@ namespace FurAffinity
                 l.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
                 l.Padding = new Padding(3, 0, 0, 0);
                 l.Margin = new Padding(3, 3, 3, 3);
-                l.BackColor = System.Drawing.Color.FromArgb(255, 50, 0, 50);
+                l.BackColor = System.Drawing.Color.FromArgb(255, 50, 50, 50);
 
                 var contextMenu = new ContextMenuStrip();
                 var item = contextMenu.Items.Add("Delete Profile");

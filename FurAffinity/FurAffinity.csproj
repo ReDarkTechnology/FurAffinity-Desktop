@@ -69,6 +69,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FavoritesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FavoritesForm.Designer.cs">
+      <DependentUpon>FavoritesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FurAffinityScraper.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +96,9 @@
     <Compile Include="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FavoritesForm.resx">
+      <DependentUpon>FavoritesForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
