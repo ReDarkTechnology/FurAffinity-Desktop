@@ -174,7 +174,6 @@ namespace FurAffinity
             webBrowser.CoreWebView2.Navigate("https://www.furaffinity.net/");
 
             webBrowser.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
-            webBrowser.CoreWebView2.NavigationCompleted += WebBrowser_Navigated;
             webBrowser.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
             webBrowser.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
 
@@ -191,16 +190,11 @@ namespace FurAffinity
             }
         }
 
-        private void WebBrowser_Navigated(object sender, CoreWebView2NavigationCompletedEventArgs e)
-        {
-            var uri = webBrowser.Source.AbsoluteUri;
-            favoritePostButton.Enabled = uri.Contains("net/view/");
-        }
-
         private void CoreWebView2_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
-        {   
-            if(e.Uri.Contains("//www.furaffinity.net"))
+        {
+            if (e.Uri.Contains("//www.furaffinity.net"))
             {
+                favoritePostButton.Enabled = e.Uri.Contains("net/view/");
                 urlBox.Text = e.Uri;
             }
             else
@@ -211,8 +205,12 @@ namespace FurAffinity
             }
         }
 
-        private async void CoreWebView2_DOMContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e) =>
-            UpdateNotifications(await GetHtmlFromBrowser());
+        private async void CoreWebView2_DOMContentLoaded(object sender, CoreWebView2DOMContentLoadedEventArgs e)
+        {
+            string html = await GetHtmlFromBrowser();
+            UpdateFavoriteButtonState(html);
+            UpdateNotifications(html);
+        }
 
         private void CoreWebView2_ContextMenuRequested(object sender, CoreWebView2ContextMenuRequestedEventArgs e)
         {
