@@ -29,6 +29,7 @@ namespace FurAffinity
 
         // XPaths
         const string notificationXPath = "//*[@id=\"ddmenu\"]/ul/li[7]";
+        const string takeAllLinksScript = "function takeData() { var selectionNode = document.querySelector(\"section[id='gallery-search-results']\"); var data = { links: [] }; if(selectionNode != null) { var allNodes = selectionNode.querySelectorAll('figure'); for(var i = 0; i<allNodes.length; i++) data.links.push(allNodes[i].querySelector('a').getAttribute('href')); } return data; } takeData();";
         #endregion
 
         #region Initialization
@@ -169,11 +170,19 @@ namespace FurAffinity
             return JsonConvert.DeserializeObject(html).ToString();
         }
 
+        public async Task<string> GetLinksFromPage()
+        {
+            var task = webBrowser.CoreWebView2.ExecuteScriptAsync(takeAllLinksScript);
+            var json = await task;
+            return JsonConvert.DeserializeObject(json).ToString();
+        }
+
         private void WebBrowser_CoreWebView2InitializationCompleted(object sender, CoreWebView2InitializationCompletedEventArgs e)
         {
             webBrowser.CoreWebView2.Navigate("https://www.furaffinity.net/");
 
             webBrowser.CoreWebView2.NavigationStarting += CoreWebView2_NavigationStarting;
+            webBrowser.CoreWebView2.NavigationCompleted += CoreWebView2_NavigationCompleted;
             webBrowser.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
             webBrowser.CoreWebView2.DOMContentLoaded += CoreWebView2_DOMContentLoaded;
 
@@ -181,9 +190,13 @@ namespace FurAffinity
             webBrowser.CoreWebView2.ContextMenuRequested += CoreWebView2_ContextMenuRequested;
         }
 
+        private async void CoreWebView2_NavigationCompleted(object sender, CoreWebView2NavigationCompletedEventArgs e)
+        {
+        }
+
         private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
-            if (!e.Uri.Contains("//www.furaffinity.net"))
+            if (!e.Uri.Contains("furaffinity.net"))
             {
                 System.Diagnostics.Process.Start(e.Uri);
                 e.Handled = true;
@@ -192,7 +205,7 @@ namespace FurAffinity
 
         private void CoreWebView2_NavigationStarting(object sender, CoreWebView2NavigationStartingEventArgs e)
         {
-            if (e.Uri.Contains("//www.furaffinity.net"))
+            if (e.Uri.Contains("furaffinity.net"))
             {
                 favoritePostButton.Enabled = e.Uri.Contains("net/view/");
                 urlBox.Text = e.Uri;
@@ -568,13 +581,13 @@ namespace FurAffinity
             AddMessage(messages, "journal", previous.journals, journals);
             AddMessage(messages, "message", previous.notes, notes);
 
-            Console.WriteLine($"Notification count: {messages.Count}");
+            //Console.WriteLine($"Notification count: {messages.Count}");
             return messages.Count > 0 ? "There's " + string.Join(", ", messages.ToArray()) : null;
         }
 
         public void AddMessage(List<string> list, string type, int start, int end)
         {
-            Console.WriteLine($"Checking {type} - S:{start} E:{end}");
+            //Console.WriteLine($"Checking {type} - S:{start} E:{end}");
             if (start < end)
             {
                 var count = end - start;
