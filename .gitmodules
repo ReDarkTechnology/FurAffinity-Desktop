@@ -1,0 +1,3 @@
+[submodule "Installer-Repack"]
+	path = Installer-Repack
+	url = https://github.com/ReDarkTechnology/Installer-Repack

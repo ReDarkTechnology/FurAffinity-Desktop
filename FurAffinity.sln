@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.33026.149
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FurAffinity", "FurAffinity\FurAffinity.csproj", "{81F281E6-E3A1-47C2-AD7F-5B45F4FA8D62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Installer-Repack", "Installer-Repack\Installer-Repack\Installer-Repack.csproj", "{60078A87-A833-4997-8961-83922CDA0814}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uninstaller", "Installer-Repack\Uninstaller\Uninstaller.csproj", "{BBC784C9-D0D3-48C8-A59F-984CF3FC4168}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{81F281E6-E3A1-47C2-AD7F-5B45F4FA8D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81F281E6-E3A1-47C2-AD7F-5B45F4FA8D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81F281E6-E3A1-47C2-AD7F-5B45F4FA8D62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60078A87-A833-4997-8961-83922CDA0814}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60078A87-A833-4997-8961-83922CDA0814}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60078A87-A833-4997-8961-83922CDA0814}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60078A87-A833-4997-8961-83922CDA0814}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBC784C9-D0D3-48C8-A59F-984CF3FC4168}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBC784C9-D0D3-48C8-A59F-984CF3FC4168}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBC784C9-D0D3-48C8-A59F-984CF3FC4168}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBC784C9-D0D3-48C8-A59F-984CF3FC4168}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
