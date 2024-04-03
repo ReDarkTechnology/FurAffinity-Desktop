@@ -28,7 +28,7 @@ namespace FurAffinity
         public static string absoluteProfileDir;
 
         // XPaths
-        const string notificationXPath = "//*[@id=\"ddmenu\"]/ul/li[7]";
+        const string notificationXPath = "//*[@id=\"ddmenu\"]/ul/li[8]";
         const string takeAllLinksScript = "function takeData() { var selectionNode = document.querySelector(\"section[id='gallery-search-results']\"); var data = { links: [] }; if(selectionNode != null) { var allNodes = selectionNode.querySelectorAll('figure'); for(var i = 0; i<allNodes.length; i++) data.links.push(allNodes[i].querySelector('a').getAttribute('href')); } return data; } takeData();";
         #endregion
 
